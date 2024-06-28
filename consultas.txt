@@ -1,0 +1,46 @@
+// Obtener el listado de publicaciones de un autor, filtrando por su correo electrónico 
+
+
+db.publications.aggregate([
+    {
+      $lookup: {
+        from: "authors",
+        localField: "author_id",
+        foreignField: "_id",
+        as: "author"
+      }
+    },
+    {
+       $match: { "author.email": "john.smith@gmail.com" }
+    }
+]);
+
+// Obtener el listado de publicaciones de un autor, filtrando por nombre y apellidos, ordenado por fecha de publicación descendente 
+
+
+db.publications.aggregate([
+    {
+      $lookup: {
+        from: "authors",
+        localField: "author_id",
+        foreignField: "_id",
+        as: "author"
+      }
+    },
+    {
+      $match: { "author.name": "Michael", "author.lastname": "Williams" }
+    },
+    {
+      $sort: { publication_date: -1 }
+    }
+]);
+
+// Obtener un listado de publicaciones filtrado por un rango de fechas 
+
+
+db.publications.find({
+    publication_date: {
+      $gte: ISODate("2024-01-10"),
+      $lte: ISODate("2024-01-30")
+    }
+});
